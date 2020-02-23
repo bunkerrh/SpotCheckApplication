@@ -17,7 +17,7 @@ namespace SpotCheckApplication
         public static double ScreenWidth { get; internal set; }
         public static double ScreenHeight { get; internal set; }
 
-        public App()
+        public void AppInit()
         {
             InitializeComponent();
         }

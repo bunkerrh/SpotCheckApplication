@@ -20,6 +20,10 @@ namespace SpotCheckApplication
         public MainPage()
         {
             InitializeComponent();
+            btnCreate.Clicked += BtnCreate_Clicked;
+            btnJoin.Clicked += BtnJoin_Clicked;
+            MenuPage.prevPage = this.Title;
+            MenuPage.pageCount += 1;
         }
         protected override void OnDisappearing()
         {
