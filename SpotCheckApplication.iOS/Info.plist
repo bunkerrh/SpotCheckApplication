@@ -34,5 +34,12 @@
     <string>SpotCheckApplication</string>
     <key>XSAppIconAssets</key>
     <string>Assets.xcassets/AppIcon.appiconset</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Can we use You location at all times</string>
+    <key>NsLocationWhenInUseUsageDescription</key>
+    <string>Can we use your location when your app is being used</string>
+    <key>NsLocationAlwaysAndWhenInUseUsageLocation</key>
+    <string>Can we use You location at all times</string>
+
 </dict>
 </plist>

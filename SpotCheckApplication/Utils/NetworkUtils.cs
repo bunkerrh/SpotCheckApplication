@@ -12,14 +12,17 @@ namespace SpotCheckApplication.Utils
     {
         public static List<double> userLats = new List<double>();
         public static List<double> userLngs = new List<double>();
+        static String connString = CommonConstants.sqlConn;
+        public static Dictionary<int, String> groupsDictionary = new Dictionary<int, string>();
 
-        
+
+
+
 
         //Insert new users into DB
         public static int insertGroup(String groupName, String groupCode, int hostID)
         {
             int groupID = 0;
-            String connString = CommonConstants.sqlConn;
             try
             {
 
@@ -67,7 +70,6 @@ namespace SpotCheckApplication.Utils
         //Check to see if the random group code is already in the DB
         public static int searchDBForRandom(String myRandom)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             //Could rewrite method to run a stored procedure similar to insertDB() instead of going directly at table
             String query = "SELECT groupCode FROM tGroup WHERE groupCode = '" + myRandom + "';";
             int numResult = 0;
@@ -116,10 +118,11 @@ namespace SpotCheckApplication.Utils
             Dictionary<int, String> userGroups = new Dictionary<int, string>();
             List<String> groupName = new List<String>();
 
+
             try
             {
                 List<int> groupIDs = new List<int>();
-                String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
+               
                 //String query = "SELECT TOP (100) PERCENT dbo.tGroup.GroupName AS groupName FROM dbo.tUsers INNER JOIN dbo.tGroup_User ON dbo.tUsers.UserID = dbo.tGroup_User.UserID INNER JOIN dbo.tGroup ON dbo.tGroup_User.GroupID = dbo.tGroup.GroupID GROUP BY dbo.tGroup_User.GroupID, dbo.tGroup.GroupName, dbo.tUsers.UserID, dbo.tUsers.userName HAVING(dbo.tUsers.UserID = 66) ORDER BY groupName";
                 String userID = App.Current.Properties["savedUserID"].ToString();
                 Console.WriteLine(userID);
@@ -178,7 +181,6 @@ namespace SpotCheckApplication.Utils
 
             try
             {
-                String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
                 //String query = "SELECT TOP (100) PERCENT dbo.tGroup.GroupName AS groupName FROM dbo.tUsers INNER JOIN dbo.tGroup_User ON dbo.tUsers.UserID = dbo.tGroup_User.UserID INNER JOIN dbo.tGroup ON dbo.tGroup_User.GroupID = dbo.tGroup.GroupID GROUP BY dbo.tGroup_User.GroupID, dbo.tGroup.GroupName, dbo.tUsers.UserID, dbo.tUsers.userName HAVING(dbo.tUsers.UserID = 66) ORDER BY groupName";
                 int groupID = (int)App.Current.Properties["currentGroupID"];
                 int myUser = (int)App.Current.Properties["savedUserID"];
@@ -235,7 +237,6 @@ namespace SpotCheckApplication.Utils
         //delete from tGroup_User where userID = 148 and GroupID = 299
         public static void DeleteUserFromGroup(int GroupID)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             int userID = Convert.ToInt32(App.Current.Properties["savedUserID"]);
             String query = "EXEC spDeleteUserFromGroup '" + GroupID + "', " + userID;
 
@@ -262,7 +263,6 @@ namespace SpotCheckApplication.Utils
         //delete from tGroup_User where userID = 148 and GroupID = 299
         public static void updateCoords(double lat, double lng)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             int userID = Convert.ToInt32(App.Current.Properties["savedUserID"]);
             String query = "UPDATE tUsers SET userLat = " + lat + ", userLng = " + lng + " WHERE UserID = " + userID;
 
@@ -289,7 +289,6 @@ namespace SpotCheckApplication.Utils
         //Retrieve the groupID when a user enters a group code
         public static int getGroupIdFromGroupCode(String groupCode)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             String query = "EXEC spGetGroupIDFromGroupCode '" + groupCode + "'";
             int groupID = 0;
             int numResult;
@@ -340,7 +339,6 @@ namespace SpotCheckApplication.Utils
         //Retrieve the groupID when a user enters a group code
         public static String getGroupNameFromGroupCode(String groupCode)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             String query = "EXEC spGetGroupNameFromCode'" + groupCode + "'";
             String groupName = null;
             int numResult;
@@ -391,7 +389,6 @@ namespace SpotCheckApplication.Utils
         //Retrieve the groupID when a user enters a group code
         public static String getGroupCodeFromUserIdAndGroupName(int UserID, String groupName)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             String query = "EXEC spGetGroupCodeFromUserIdAndGroupName " + UserID + ", '" + groupName + "'";
             String groupCode = null;
             int numResult;
@@ -442,7 +439,6 @@ namespace SpotCheckApplication.Utils
         //insert a user into a group after they enter a group code
         public static void insertIntoGroup(int groupID, int userID)
         {
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             String query = "INSERT INTO tGroup_User(GroupID, UserID) VALUES (" + groupID + ", " + userID + ")";
 
             try
@@ -465,48 +461,7 @@ namespace SpotCheckApplication.Utils
             }
         }
 
-        public static int Login(String username, String password)
-        {
-            //store username and password
-            String MyUsername = username;
-            String MyPassword = password;
-            int numResult;
-            int userID = 0;
-
-            //search query
-            string query = "SELECT UserID FROM dbo.tUsers WHERE(userName = N'" + username + "') AND(userPassword = '" + password + "')";
-
-            //connect
-            SqlConnection conn = new SqlConnection(@"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18");
-
-            SqlCommand command = new SqlCommand(query, conn);
-
-            try
-            {
-                SqlDataAdapter daSearchGroups = new SqlDataAdapter(command);
-                DataTable dtReturnedGroups = new DataTable();
-                daSearchGroups.Fill(dtReturnedGroups);
-                numResult = dtReturnedGroups.Rows.Count;
-
-                for (int i = 0; i < numResult; i++)
-                {
-                    DataRow dr = dtReturnedGroups.Rows[i];
-                    userID = Convert.ToInt32(dr["UserID"]);
-                }
-            }
-
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            finally
-            {
-                command.Connection.Close();
-            }
-
-            return userID;
-        }
-
+     
         //This works! Connects xamarin app to ms sql DB... Template Method
         public static void ConnectDB()
         {
@@ -517,7 +472,6 @@ namespace SpotCheckApplication.Utils
             String query = "SELECT userName FROM tUsers";
 
             //String used to connect to DB
-            String connString = @"Server=youseedatabase.cxj5odskcws0.us-east-2.rds.amazonaws.com,1433;DataBase=yousee;User ID=youseeDatabase; Password=yousee18";
             try
             {
                 using (SqlConnection sqlConn = new SqlConnection(connString))
